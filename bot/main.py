@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from plugin_manager import PluginManager
 from openai_helper import OpenAIHelper, default_max_tokens, are_functions_available
 from telegram_bot import ChatGPTTelegramBot
+from prompts import ASSISTANT_PROMPT, VISION_PROMPT, WHISPER_PROMPT, VOICE_REPLY_PROMPTS
 
 
 def main():
@@ -37,7 +38,8 @@ def main():
         'proxy': os.environ.get('PROXY', None) or os.environ.get('OPENAI_PROXY', None),
         'max_history_size': int(os.environ.get('MAX_HISTORY_SIZE', 15)),
         'max_conversation_age_minutes': int(os.environ.get('MAX_CONVERSATION_AGE_MINUTES', 180)),
-        'assistant_prompt': os.environ.get('ASSISTANT_PROMPT', 'You are a helpful assistant.'),
+        # 'assistant_prompt': os.environ.get('ASSISTANT_PROMPT', 'You are a helpful assistant.'),
+        'assistant_prompt': ASSISTANT_PROMPT,
         'max_tokens': int(os.environ.get('MAX_TOKENS', max_tokens_default)),
         'n_choices': int(os.environ.get('N_CHOICES', 1)),
         'temperature': float(os.environ.get('TEMPERATURE', 1.0)),
@@ -52,10 +54,13 @@ def main():
         'frequency_penalty': float(os.environ.get('FREQUENCY_PENALTY', 0.0)),
         'bot_language': os.environ.get('BOT_LANGUAGE', 'en'),
         'show_plugins_used': os.environ.get('SHOW_PLUGINS_USED', 'false').lower() == 'true',
-        'whisper_prompt': os.environ.get('WHISPER_PROMPT', ''),
+        # 'whisper_prompt': os.environ.get('WHISPER_PROMPT', ''),
+        'whisper_prompt': WHISPER_PROMPT,
         'vision_model': os.environ.get('VISION_MODEL', 'gpt-4-vision-preview'),
-        'enable_vision_follow_up_questions': os.environ.get('ENABLE_VISION_FOLLOW_UP_QUESTIONS', 'true').lower() == 'true',
-        'vision_prompt': os.environ.get('VISION_PROMPT', 'What is in this image'),
+        'enable_vision_follow_up_questions': os.environ.get('ENABLE_VISION_FOLLOW_UP_QUESTIONS',
+                                                            'true').lower() == 'true',
+        # 'vision_prompt': os.environ.get('VISION_PROMPT', 'What is in this image'),
+        'vision_prompt': VISION_PROMPT,
         'vision_detail': os.environ.get('VISION_DETAIL', 'auto'),
         'vision_max_tokens': int(os.environ.get('VISION_MAX_TOKENS', '300')),
         'tts_model': os.environ.get('TTS_MODEL', 'tts-1'),
@@ -64,7 +69,7 @@ def main():
 
     if openai_config['enable_functions'] and not functions_available:
         logging.error(f'ENABLE_FUNCTIONS is set to true, but the model {model} does not support it. '
-                        'Please set ENABLE_FUNCTIONS to false or use a model that supports it.')
+                      'Please set ENABLE_FUNCTIONS to false or use a model that supports it.')
         exit(1)
     if os.environ.get('MONTHLY_USER_BUDGETS') is not None:
         logging.warning('The environment variable MONTHLY_USER_BUDGETS is deprecated. '
@@ -88,7 +93,8 @@ def main():
         'stream': os.environ.get('STREAM', 'true').lower() == 'true',
         'proxy': os.environ.get('PROXY', None) or os.environ.get('TELEGRAM_PROXY', None),
         'voice_reply_transcript': os.environ.get('VOICE_REPLY_WITH_TRANSCRIPT_ONLY', 'false').lower() == 'true',
-        'voice_reply_prompts': os.environ.get('VOICE_REPLY_PROMPTS', '').split(';'),
+        # 'voice_reply_prompts': os.environ.get('VOICE_REPLY_PROMPTS', '').split(';'),
+        'voice_reply_prompts': VOICE_REPLY_PROMPTS.split(';'),
         'ignore_group_transcriptions': os.environ.get('IGNORE_GROUP_TRANSCRIPTIONS', 'true').lower() == 'true',
         'ignore_group_vision': os.environ.get('IGNORE_GROUP_VISION', 'true').lower() == 'true',
         'group_trigger_keyword': os.environ.get('GROUP_TRIGGER_KEYWORD', ''),
