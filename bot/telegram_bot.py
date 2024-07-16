@@ -430,7 +430,7 @@ class ChatGPTTelegramBot:
             return
 
         await update.message.reply_text(
-            f"WHISPER_PROMPT:\n\n{QUOTE_HELPER}\n{self.openai.config['assistant_prompt']}\n{QUOTE_HELPER}",
+            f"WHISPER_PROMPT:\n\n{QUOTE_HELPER}\n{self.openai.config['whisper_prompt']}\n{QUOTE_HELPER}",
             # parse_mode=constants.ParseMode.MARKDOWN,
         )
 
