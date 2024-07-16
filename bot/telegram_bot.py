@@ -475,6 +475,7 @@ class ChatGPTTelegramBot:
                 },
                 f,
                 ensure_ascii=False,
+                indent=2,
             )
         shutil.copyfile(
             "bot/prompts.json",
