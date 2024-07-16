@@ -151,8 +151,30 @@ class ChatGPTTelegramBot:
         self.inline_queries_cache = {}
 
     async def start(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
-        # await self.help(update=update, _=_)
-        await self.reset(update=update, context=_)
+        """
+        Starts the conversation.
+        """
+        if not await is_allowed(self.config, update, _):
+            logging.warning(
+                f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
+                "is not allowed to start the conversation"
+            )
+            await self.send_disallowed_message(update, _)
+            return
+
+        logging.info(
+            f"Starting the conversation for user {update.message.from_user.name} "
+            f"(id: {update.message.from_user.id})..."
+        )
+
+        chat_id = update.effective_chat.id
+        reset_content = message_text(update.message)
+        self.openai.reset_chat_history(chat_id=chat_id, content=reset_content)
+
+        await update.effective_message.reply_text(
+            message_thread_id=get_thread_id(update),
+            text=self.openai.config["assistant_first_message"],
+        )
 
     async def help(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         """
