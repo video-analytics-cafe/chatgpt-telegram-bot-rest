@@ -305,7 +305,7 @@ class ChatGPTTelegramBot:
 
         await update.message.reply_text(
             f"ASSISTANT_PROMPT:\n\n{QUOTE_HELPER}\n{self.openai.config['assistant_prompt']}\n{QUOTE_HELPER}",
-            parse_mode=constants.ParseMode.MARKDOWN,
+            # parse_mode=constants.ParseMode.MARKDOWN,
         )
 
     async def set_assistant_prompt(
@@ -369,7 +369,7 @@ class ChatGPTTelegramBot:
 
         await update.message.reply_text(
             f"VISION_PROMPT:\n\n{QUOTE_HELPER}\n{self.openai.config['vision_prompt']}\n{QUOTE_HELPER}",
-            parse_mode=constants.ParseMode.MARKDOWN,
+            # parse_mode=constants.ParseMode.MARKDOWN,
         )
 
     async def set_vision_prompt(
@@ -431,7 +431,7 @@ class ChatGPTTelegramBot:
 
         await update.message.reply_text(
             f"WHISPER_PROMPT:\n\n{QUOTE_HELPER}\n{self.openai.config['assistant_prompt']}\n{QUOTE_HELPER}",
-            parse_mode=constants.ParseMode.MARKDOWN,
+            # parse_mode=constants.ParseMode.MARKDOWN,
         )
 
     async def set_whisper_prompt(
