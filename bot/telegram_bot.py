@@ -6,6 +6,7 @@ import logging
 import os
 import io
 import shutil
+from datetime import datetime
 
 from uuid import uuid4
 from telegram import BotCommandScopeAllGroupChats, Update, constants
@@ -340,17 +341,20 @@ class ChatGPTTelegramBot:
                     "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
                     "VISION_PROMPT": self.openai.config["vision_prompt"],
                     "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
-                    "VOICE_REPLY_PROMPTS": self.config["voice_reply_prompts"],
+                    "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
                 },
                 f,
                 ensure_ascii=False,
                 indent=2,
             )
-        shutil.copyfile("bot/prompts.json", f"bot/prompts_backup_{str(uuid4())}.json")
+        shutil.copyfile(
+            "bot/prompts.json",
+            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+        )
 
         await update.message.reply_text(
             f"ASSISTANT_PROMPT was set!!!",
-            parse_mode=constants.ParseMode.MARKDOWN,
+            # parse_mode=constants.ParseMode.MARKDOWN,
         )
 
     async def get_vision_prompt(
@@ -402,17 +406,20 @@ class ChatGPTTelegramBot:
                     "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
                     "VISION_PROMPT": self.openai.config["vision_prompt"],
                     "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
-                    "VOICE_REPLY_PROMPTS": self.config["voice_reply_prompts"],
+                    "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
                 },
                 f,
                 ensure_ascii=False,
                 indent=2,
             )
-        shutil.copyfile("bot/prompts.json", f"bot/prompts_backup_{str(uuid4())}.json")
+        shutil.copyfile(
+            "bot/prompts.json",
+            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+        )
 
         await update.message.reply_text(
             f"VISION_PROMPT was set!!!",
-            parse_mode=constants.ParseMode.MARKDOWN,
+            # parse_mode=constants.ParseMode.MARKDOWN,
         )
 
     async def get_whisper_prompt(
@@ -464,16 +471,19 @@ class ChatGPTTelegramBot:
                     "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
                     "VISION_PROMPT": self.openai.config["vision_prompt"],
                     "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
-                    "VOICE_REPLY_PROMPTS": self.config["voice_reply_prompts"],
+                    "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
                 },
                 f,
                 ensure_ascii=False,
             )
-        shutil.copyfile("bot/prompts.json", f"bot/prompts_backup_{str(uuid4())}.json")
+        shutil.copyfile(
+            "bot/prompts.json",
+            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+        )
 
         await update.message.reply_text(
             f"WHISPER_PROMPT was set!!!",
-            parse_mode=constants.ParseMode.MARKDOWN,
+            # parse_mode=constants.ParseMode.MARKDOWN,
         )
 
     async def resend(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
