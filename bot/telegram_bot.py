@@ -89,6 +89,14 @@ class ChatGPTTelegramBot:
                 description=localized_text("resend_description", bot_language),
             ),
             BotCommand(
+                command="get_assistant_first_message",
+                description="get_assistant_first_message",
+            ),
+            BotCommand(
+                command="set_assistant_first_message",
+                description="set_assistant_first_message",
+            ),
+            BotCommand(
                 command="get_assistant_prompt",
                 description="get_assistant_prompt",
             ),
@@ -141,6 +149,10 @@ class ChatGPTTelegramBot:
         self.usage = {}
         self.last_message = {}
         self.inline_queries_cache = {}
+
+    async def start(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+        await self.help(update=update, _=_)
+        await self.reset(update=update, context=_)
 
     async def help(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         """
@@ -338,6 +350,9 @@ class ChatGPTTelegramBot:
         with open("bot/prompts.json", "w", encoding="utf8") as f:
             json.dump(
                 {
+                    "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+                        "assistant_first_message"
+                    ],
                     "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
                     "VISION_PROMPT": self.openai.config["vision_prompt"],
                     "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
@@ -354,6 +369,76 @@ class ChatGPTTelegramBot:
 
         await update.message.reply_text(
             f"ASSISTANT_PROMPT was set!!!",
+            # parse_mode=constants.ParseMode.MARKDOWN,
+        )
+
+    async def get_assistant_first_message(
+        self, update: Update, context: ContextTypes.DEFAULT_TYPE
+    ):
+        """
+        Returns token usage statistics for current day and month.
+        """
+        if not await is_allowed(self.config, update, context):
+            logging.warning(
+                f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
+                "is not allowed to request their usage statistics"
+            )
+            await self.send_disallowed_message(update, context)
+            return
+
+        await update.message.reply_text(
+            f"ASSISTANT_FIRST_MESSAGE:\n\n{QUOTE_HELPER}\n{self.openai.config['assistant_first_message']}\n{QUOTE_HELPER}",
+            # parse_mode=constants.ParseMode.MARKDOWN,
+        )
+
+    async def set_assistant_first_message(
+        self, update: Update, context: ContextTypes.DEFAULT_TYPE
+    ):
+        """
+        Returns token usage statistics for current day and month.
+        """
+        if not await is_allowed(self.config, update, context):
+            logging.warning(
+                f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
+                "is not allowed to request their usage statistics"
+            )
+            await self.send_disallowed_message(update, context)
+            return
+
+        new_assistant_first_message = message_text(update.message)
+        if new_assistant_first_message == "":
+            await update.effective_message.reply_text(
+                message_thread_id=get_thread_id(update),
+                text="new_assistant_first_message is empty",
+            )
+            return
+
+        self.openai.config["assistant_first_message"] = new_assistant_first_message
+        logging.info(
+            f'new self.openai.config["assistant_first_message"] = {new_assistant_first_message}'
+        )
+        with open("bot/prompts.json", "w", encoding="utf8") as f:
+            json.dump(
+                {
+                    "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+                        "assistant_first_message"
+                    ],
+                    "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
+                    "VISION_PROMPT": self.openai.config["vision_prompt"],
+                    "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
+                    "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
+                },
+                f,
+                ensure_ascii=False,
+                indent=2,
+            )
+        shutil.copyfile(
+            "bot/prompts.json",
+            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+        )
+
+        await update.message.reply_text(
+            f"ASSISTANT_FIRST_MESSAGE was set!!!",
             # parse_mode=constants.ParseMode.MARKDOWN,
         )
 
@@ -403,6 +488,9 @@ class ChatGPTTelegramBot:
         with open("bot/prompts.json", "w", encoding="utf8") as f:
             json.dump(
                 {
+                    "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+                        "assistant_first_message"
+                    ],
                     "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
                     "VISION_PROMPT": self.openai.config["vision_prompt"],
                     "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
@@ -468,6 +556,9 @@ class ChatGPTTelegramBot:
         with open("bot/prompts.json", "w", encoding="utf8") as f:
             json.dump(
                 {
+                    "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+                        "assistant_first_message"
+                    ],
                     "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
                     "VISION_PROMPT": self.openai.config["vision_prompt"],
                     "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
@@ -544,6 +635,10 @@ class ChatGPTTelegramBot:
         await update.effective_message.reply_text(
             message_thread_id=get_thread_id(update),
             text=localized_text("reset_done", self.config["bot_language"]),
+        )
+        await update.effective_message.reply_text(
+            message_thread_id=get_thread_id(update),
+            text=self.openai.config["assistant_first_message"],
         )
 
     # async def image(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1589,9 +1684,19 @@ class ChatGPTTelegramBot:
         application.add_handler(CommandHandler("help", self.help))
         # application.add_handler(CommandHandler('image', self.image))
         application.add_handler(CommandHandler("tts", self.tts))
-        application.add_handler(CommandHandler("start", self.help))
+        application.add_handler(CommandHandler("start", self.start))
         application.add_handler(CommandHandler("stats", self.stats))
         application.add_handler(CommandHandler("resend", self.resend))
+        application.add_handler(
+            CommandHandler(
+                "get_assistant_first_message", self.get_assistant_first_message
+            )
+        )
+        application.add_handler(
+            CommandHandler(
+                "set_assistant_first_message", self.set_assistant_first_message
+            )
+        )
         application.add_handler(
             CommandHandler("get_assistant_prompt", self.get_assistant_prompt)
         )

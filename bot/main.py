@@ -49,6 +49,7 @@ def main():
         ),
         # 'assistant_prompt': os.environ.get('ASSISTANT_PROMPT', 'You are a helpful assistant.'),
         "assistant_prompt": prompts["ASSISTANT_PROMPT"],
+        "assistant_first_message": prompts["ASSISTANT_FIRST_MESSAGE"],
         "max_tokens": int(os.environ.get("MAX_TOKENS", max_tokens_default)),
         "n_choices": int(os.environ.get("N_CHOICES", 1)),
         "temperature": float(os.environ.get("TEMPERATURE", 1.0)),
