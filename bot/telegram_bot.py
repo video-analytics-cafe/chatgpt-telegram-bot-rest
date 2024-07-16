@@ -151,7 +151,7 @@ class ChatGPTTelegramBot:
         self.inline_queries_cache = {}
 
     async def start(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
-        await self.help(update=update, _=_)
+        # await self.help(update=update, _=_)
         await self.reset(update=update, context=_)
 
     async def help(self, update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
