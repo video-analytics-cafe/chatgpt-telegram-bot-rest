@@ -116,6 +116,8 @@ def main():
         "enable_vision": os.environ.get("ENABLE_VISION", "true").lower() == "true",
         "enable_tts_generation": os.environ.get("ENABLE_TTS_GENERATION", "true").lower()
         == "true",
+        "enable_auto_tts_generation": os.environ.get("ENABLE_AUTO_TTS_GENERATION", "true").lower()
+        == "true",
         "budget_period": os.environ.get("BUDGET_PERIOD", "monthly").lower(),
         "user_budgets": os.environ.get(
             "USER_BUDGETS", os.environ.get("MONTHLY_USER_BUDGETS", "*")
