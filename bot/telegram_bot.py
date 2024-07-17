@@ -938,7 +938,7 @@ class ChatGPTTelegramBot:
 
                         async def _generate():
                             try:
-                                
+
                                 speech_file, text_length = (
                                     await self.openai.generate_speech(text=response)
                                 )
@@ -1178,12 +1178,15 @@ class ChatGPTTelegramBot:
                     if tokens != "not_finished":
                         total_tokens = int(tokens)
 
+                    content2tts = content
+
             else:
 
                 try:
                     interpretation, total_tokens = await self.openai.interpret_image(
                         chat_id, temp_file_png, prompt=prompt
                     )
+                    content2tts = interpretation
 
                     try:
                         await update.effective_message.reply_text(
@@ -1229,6 +1232,59 @@ class ChatGPTTelegramBot:
             allowed_user_ids = self.config["allowed_user_ids"].split(",")
             if str(user_id) not in allowed_user_ids and "guests" in self.usage:
                 self.usage["guests"].add_vision_tokens(total_tokens, vision_token_price)
+
+            if self.config["enable_auto_tts_generation"]:
+
+                async def _generate():
+                    try:
+
+                        speech_file, text_length = await self.openai.generate_speech(
+                            text=content2tts
+                        )
+
+                        await update.effective_message.reply_voice(
+                            reply_to_message_id=get_reply_to_message_id(
+                                self.config, update
+                            ),
+                            voice=speech_file,
+                        )
+                        speech_file.close()
+                        # add image request to users usage tracker
+                        user_id = update.message.from_user.id
+                        self.usage[user_id].add_tts_request(
+                            text_length,
+                            self.config["tts_model"],
+                            self.config["tts_prices"],
+                        )
+                        # add guest chat request to guest usage tracker
+                        if (
+                            str(user_id)
+                            not in self.config["allowed_user_ids"].split(",")
+                            and "guests" in self.usage
+                        ):
+                            self.usage["guests"].add_tts_request(
+                                text_length,
+                                self.config["tts_model"],
+                                self.config["tts_prices"],
+                            )
+
+                    except Exception as e:
+                        logging.exception(e)
+                        await update.effective_message.reply_text(
+                            message_thread_id=get_thread_id(update),
+                            reply_to_message_id=get_reply_to_message_id(
+                                self.config, update
+                            ),
+                            text=f"{localized_text('tts_fail', self.config['bot_language'])}: {str(e)}",
+                            parse_mode=constants.ParseMode.MARKDOWN,
+                        )
+
+                await wrap_with_indicator(
+                    update,
+                    context,
+                    _generate,
+                    constants.ChatAction.UPLOAD_VOICE,
+                )
 
         await wrap_with_indicator(
             update, context, _execute, constants.ChatAction.TYPING
@@ -1437,7 +1493,7 @@ class ChatGPTTelegramBot:
 
                 async def _generate():
                     try:
-                        
+
                         speech_file, text_length = await self.openai.generate_speech(
                             text=content
                         )
