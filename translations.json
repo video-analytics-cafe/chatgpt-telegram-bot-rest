@@ -7,7 +7,7 @@
         "stats_description":"Get your current usage statistics",
         "resend_description":"Resend the latest message",
         "chat_description":"Chat with the bot!",
-        "disallowed":"Sorry, you are not allowed to use this bot. You can check out the source code at https://github.com/n3d1117/chatgpt-telegram-bot",
+        "disallowed":"Sorry, you are not allowed to use this bot.",
         "budget_limit":"Sorry, you have reached your usage limit.",
         "help_text":["Help info:"],
         "stats_conversation":["Current conversation", "chat messages in history", "chat tokens in history"],
