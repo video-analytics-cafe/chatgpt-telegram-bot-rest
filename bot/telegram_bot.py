@@ -80,46 +80,46 @@ class ChatGPTTelegramBot:
                 command="reset",
                 description=localized_text("reset_description", bot_language),
             ),
-            BotCommand(
-                command="stats",
-                description=localized_text("stats_description", bot_language),
-            ),
+            # BotCommand(
+            #     command="stats",
+            #     description=localized_text("stats_description", bot_language),
+            # ),
             BotCommand(
                 command="resend",
                 description=localized_text("resend_description", bot_language),
             ),
-            BotCommand(
-                command="get_assistant_first_message",
-                description="get_assistant_first_message",
-            ),
-            BotCommand(
-                command="set_assistant_first_message",
-                description="set_assistant_first_message",
-            ),
-            BotCommand(
-                command="get_assistant_prompt",
-                description="get_assistant_prompt",
-            ),
-            BotCommand(
-                command="set_assistant_prompt",
-                description="set_assistant_prompt",
-            ),
-            BotCommand(
-                command="get_vision_prompt",
-                description="get_vision_prompt",
-            ),
-            BotCommand(
-                command="set_vision_prompt",
-                description="set_vision_prompt",
-            ),
-            BotCommand(
-                command="get_whisper_prompt",
-                description="get_whisper_prompt",
-            ),
-            BotCommand(
-                command="set_whisper_prompt",
-                description="set_whisper_prompt",
-            ),
+            # BotCommand(
+            #     command="get_assistant_first_message",
+            #     description="get_assistant_first_message",
+            # ),
+            # BotCommand(
+            #     command="set_assistant_first_message",
+            #     description="set_assistant_first_message",
+            # ),
+            # BotCommand(
+            #     command="get_assistant_prompt",
+            #     description="get_assistant_prompt",
+            # ),
+            # BotCommand(
+            #     command="set_assistant_prompt",
+            #     description="set_assistant_prompt",
+            # ),
+            # BotCommand(
+            #     command="get_vision_prompt",
+            #     description="get_vision_prompt",
+            # ),
+            # BotCommand(
+            #     command="set_vision_prompt",
+            #     description="set_vision_prompt",
+            # ),
+            # BotCommand(
+            #     command="get_whisper_prompt",
+            #     description="get_whisper_prompt",
+            # ),
+            # BotCommand(
+            #     command="set_whisper_prompt",
+            #     description="set_whisper_prompt",
+            # ),
         ]
         # If imaging is enabled, add the "image" command to the list
         # if self.config.get("enable_image_generation", False):
@@ -231,7 +231,7 @@ class ChatGPTTelegramBot:
 
         chat_id = update.effective_chat.id
         chat_messages, chat_token_length = self.openai.get_conversation_stats(chat_id)
-        remaining_budget = get_remaining_budget(self.config, self.usage, update)
+        remaining_budget = await get_remaining_budget(self.config, self.usage, update)
         bot_language = self.config["bot_language"]
 
         text_current_conversation = (
@@ -330,7 +330,10 @@ class ChatGPTTelegramBot:
         """
         Returns token usage statistics for current day and month.
         """
-        if not await is_allowed(self.config, update, context):
+        if not (
+            await is_allowed(self.config, update, context)
+            and await is_admin(config=self.config, user_id=update.message.from_user.id)
+        ):
             logging.warning(
                 f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
                 "is not allowed to request their usage statistics"
@@ -349,7 +352,10 @@ class ChatGPTTelegramBot:
         """
         Returns token usage statistics for current day and month.
         """
-        if not await is_allowed(self.config, update, context):
+        if not (
+            await is_allowed(self.config, update, context)
+            and await is_admin(config=self.config, user_id=update.message.from_user.id)
+        ):
             logging.warning(
                 f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
                 "is not allowed to request their usage statistics"
@@ -400,7 +406,10 @@ class ChatGPTTelegramBot:
         """
         Returns token usage statistics for current day and month.
         """
-        if not await is_allowed(self.config, update, context):
+        if not (
+            await is_allowed(self.config, update, context)
+            and await is_admin(config=self.config, user_id=update.message.from_user.id)
+        ):
             logging.warning(
                 f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
                 "is not allowed to request their usage statistics"
@@ -419,7 +428,10 @@ class ChatGPTTelegramBot:
         """
         Returns token usage statistics for current day and month.
         """
-        if not await is_allowed(self.config, update, context):
+        if not (
+            await is_allowed(self.config, update, context)
+            and await is_admin(config=self.config, user_id=update.message.from_user.id)
+        ):
             logging.warning(
                 f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
                 "is not allowed to request their usage statistics"
@@ -470,7 +482,10 @@ class ChatGPTTelegramBot:
         """
         Returns token usage statistics for current day and month.
         """
-        if not await is_allowed(self.config, update, context):
+        if not (
+            await is_allowed(self.config, update, context)
+            and await is_admin(config=self.config, user_id=update.message.from_user.id)
+        ):
             logging.warning(
                 f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
                 "is not allowed to request their usage statistics"
@@ -489,7 +504,10 @@ class ChatGPTTelegramBot:
         """
         Returns token usage statistics for current day and month.
         """
-        if not await is_allowed(self.config, update, context):
+        if not (
+            await is_allowed(self.config, update, context)
+            and await is_admin(config=self.config, user_id=update.message.from_user.id)
+        ):
             logging.warning(
                 f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
                 "is not allowed to request their usage statistics"
@@ -538,7 +556,10 @@ class ChatGPTTelegramBot:
         """
         Returns token usage statistics for current day and month.
         """
-        if not await is_allowed(self.config, update, context):
+        if not (
+            await is_allowed(self.config, update, context)
+            and await is_admin(config=self.config, user_id=update.message.from_user.id)
+        ):
             logging.warning(
                 f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
                 "is not allowed to request their usage statistics"
@@ -557,7 +578,10 @@ class ChatGPTTelegramBot:
         """
         Returns token usage statistics for current day and month.
         """
-        if not await is_allowed(self.config, update, context):
+        if not (
+            await is_allowed(self.config, update, context)
+            and await is_admin(config=self.config, user_id=update.message.from_user.id)
+        ):
             logging.warning(
                 f"User {update.message.from_user.name} (id: {update.message.from_user.id}) "
                 "is not allowed to request their usage statistics"
@@ -1638,7 +1662,9 @@ class ChatGPTTelegramBot:
             )
             await self.send_disallowed_message(update, context, is_inline)
             return False
-        if not is_within_budget(self.config, self.usage, update, is_inline=is_inline):
+        if not await is_within_budget(
+            self.config, self.usage, update, is_inline=is_inline
+        ):
             logging.warning(f"User {name} (id: {user_id}) reached their usage limit")
             await self.send_budget_reached_message(update, context, is_inline)
             return False
@@ -1707,7 +1733,7 @@ class ChatGPTTelegramBot:
         # application.add_handler(CommandHandler('image', self.image))
         application.add_handler(CommandHandler("tts", self.tts))
         application.add_handler(CommandHandler("start", self.start))
-        application.add_handler(CommandHandler("stats", self.stats))
+        # application.add_handler(CommandHandler("stats", self.stats))
         application.add_handler(CommandHandler("resend", self.resend))
         application.add_handler(
             CommandHandler(
