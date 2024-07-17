@@ -934,6 +934,59 @@ class ChatGPTTelegramBot:
                             parse_mode=constants.ParseMode.MARKDOWN,
                         )
 
+                    if self.config["enable_auto_tts_generation"]:
+
+                        async def _generate():
+                            try:
+                                
+                                speech_file, text_length = (
+                                    await self.openai.generate_speech(text=response)
+                                )
+
+                                await update.effective_message.reply_voice(
+                                    reply_to_message_id=get_reply_to_message_id(
+                                        self.config, update
+                                    ),
+                                    voice=speech_file,
+                                )
+                                speech_file.close()
+                                # add image request to users usage tracker
+                                user_id = update.message.from_user.id
+                                self.usage[user_id].add_tts_request(
+                                    text_length,
+                                    self.config["tts_model"],
+                                    self.config["tts_prices"],
+                                )
+                                # add guest chat request to guest usage tracker
+                                if (
+                                    str(user_id)
+                                    not in self.config["allowed_user_ids"].split(",")
+                                    and "guests" in self.usage
+                                ):
+                                    self.usage["guests"].add_tts_request(
+                                        text_length,
+                                        self.config["tts_model"],
+                                        self.config["tts_prices"],
+                                    )
+
+                            except Exception as e:
+                                logging.exception(e)
+                                await update.effective_message.reply_text(
+                                    message_thread_id=get_thread_id(update),
+                                    reply_to_message_id=get_reply_to_message_id(
+                                        self.config, update
+                                    ),
+                                    text=f"{localized_text('tts_fail', self.config['bot_language'])}: {str(e)}",
+                                    parse_mode=constants.ParseMode.MARKDOWN,
+                                )
+
+                        await wrap_with_indicator(
+                            update,
+                            context,
+                            _generate,
+                            constants.ChatAction.UPLOAD_VOICE,
+                        )
+
             except Exception as e:
                 logging.exception(e)
                 await update.effective_message.reply_text(
@@ -1384,7 +1437,7 @@ class ChatGPTTelegramBot:
 
                 async def _generate():
                     try:
-                        logging.warning(f"content: {content}")
+                        
                         speech_file, text_length = await self.openai.generate_speech(
                             text=content
                         )
