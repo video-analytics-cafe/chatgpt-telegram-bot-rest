@@ -4,7 +4,7 @@ import os
 
 from dotenv import load_dotenv
 
-from bot.utils import read_python_file_as_json
+from utils import read_python_file_as_json
 from plugin_manager import PluginManager
 from openai_helper import OpenAIHelper, default_max_tokens, are_functions_available
 from telegram_bot import ChatGPTTelegramBot
