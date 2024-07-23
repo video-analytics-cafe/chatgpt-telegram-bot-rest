@@ -4,6 +4,7 @@ import os
 
 from dotenv import load_dotenv
 
+from bot.utils import read_python_file_as_json
 from plugin_manager import PluginManager
 from openai_helper import OpenAIHelper, default_max_tokens, are_functions_available
 from telegram_bot import ChatGPTTelegramBot
@@ -13,8 +14,9 @@ def main():
     # Read .env file
     load_dotenv()
 
-    with open("bot/prompts.json", "r") as f:
-        prompts = json.load(f)
+    prompts = read_python_file_as_json("bot/prompts.py")
+    # with open("bot/prompts.json", "r") as f:
+    #     prompts = json.load(f)
 
     # Setup logging
     logging.basicConfig(
@@ -116,7 +118,9 @@ def main():
         "enable_vision": os.environ.get("ENABLE_VISION", "true").lower() == "true",
         "enable_tts_generation": os.environ.get("ENABLE_TTS_GENERATION", "true").lower()
         == "true",
-        "enable_auto_tts_generation": os.environ.get("ENABLE_AUTO_TTS_GENERATION", "true").lower()
+        "enable_auto_tts_generation": os.environ.get(
+            "ENABLE_AUTO_TTS_GENERATION", "true"
+        ).lower()
         == "true",
         "budget_period": os.environ.get("BUDGET_PERIOD", "monthly").lower(),
         "user_budgets": os.environ.get(

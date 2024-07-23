@@ -50,6 +50,7 @@ from utils import (
     is_direct_result,
     handle_direct_result,
     cleanup_intermediate_files,
+    generate_python_file_from_json,
 )
 from openai_helper import OpenAIHelper, localized_text
 from usage_tracker import UsageTracker
@@ -375,24 +376,41 @@ class ChatGPTTelegramBot:
         logging.info(
             f'new self.openai.config["assistant_prompt"] = {new_assistant_prompt}'
         )
-        with open("bot/prompts.json", "w", encoding="utf8") as f:
-            json.dump(
-                {
-                    "ASSISTANT_FIRST_MESSAGE": self.openai.config[
-                        "assistant_first_message"
-                    ],
-                    "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
-                    "VISION_PROMPT": self.openai.config["vision_prompt"],
-                    "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
-                    "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
-                },
-                f,
-                ensure_ascii=False,
-                indent=2,
-            )
+        # with open("bot/prompts.json", "w", encoding="utf8") as f:
+        #     json.dump(
+        #         {
+        #             "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+        #                 "assistant_first_message"
+        #             ],
+        #             "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
+        #             "VISION_PROMPT": self.openai.config["vision_prompt"],
+        #             "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
+        #             "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
+        #         },
+        #         f,
+        #         ensure_ascii=False,
+        #         indent=2,
+        #     )
+        # shutil.copyfile(
+        #     "bot/prompts.json",
+        #     f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+        # )
+        generate_python_file_from_json(
+            json_data={
+                "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+                    "assistant_first_message"
+                ],
+                "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
+                "VISION_PROMPT": self.openai.config["vision_prompt"],
+                "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
+                "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
+            },
+            file_path="bot/prompts.py",
+        )
+
         shutil.copyfile(
-            "bot/prompts.json",
-            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+            "bot/prompts.py",
+            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.py",
         )
 
         await update.message.reply_text(
@@ -451,24 +469,37 @@ class ChatGPTTelegramBot:
         logging.info(
             f'new self.openai.config["assistant_first_message"] = {new_assistant_first_message}'
         )
-        with open("bot/prompts.json", "w", encoding="utf8") as f:
-            json.dump(
-                {
-                    "ASSISTANT_FIRST_MESSAGE": self.openai.config[
-                        "assistant_first_message"
-                    ],
-                    "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
-                    "VISION_PROMPT": self.openai.config["vision_prompt"],
-                    "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
-                    "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
-                },
-                f,
-                ensure_ascii=False,
-                indent=2,
-            )
+        # with open("bot/prompts.json", "w", encoding="utf8") as f:
+        #     json.dump(
+        #         {
+        #             "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+        #                 "assistant_first_message"
+        #             ],
+        #             "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
+        #             "VISION_PROMPT": self.openai.config["vision_prompt"],
+        #             "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
+        #             "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
+        #         },
+        #         f,
+        #         ensure_ascii=False,
+        #         indent=2,
+        #     )
+        generate_python_file_from_json(
+            json_data={
+                "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+                    "assistant_first_message"
+                ],
+                "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
+                "VISION_PROMPT": self.openai.config["vision_prompt"],
+                "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
+                "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
+            },
+            file_path="bot/prompts.py",
+        )
+
         shutil.copyfile(
-            "bot/prompts.json",
-            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+            "bot/prompts.py",
+            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.py",
         )
 
         await update.message.reply_text(
@@ -525,24 +556,41 @@ class ChatGPTTelegramBot:
 
         self.openai.config["vision_prompt"] = new_vision_prompt
         logging.info(f'new self.openai.config["vision_prompt"] = {new_vision_prompt}')
-        with open("bot/prompts.json", "w", encoding="utf8") as f:
-            json.dump(
-                {
-                    "ASSISTANT_FIRST_MESSAGE": self.openai.config[
-                        "assistant_first_message"
-                    ],
-                    "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
-                    "VISION_PROMPT": self.openai.config["vision_prompt"],
-                    "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
-                    "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
-                },
-                f,
-                ensure_ascii=False,
-                indent=2,
-            )
+        # with open("bot/prompts.json", "w", encoding="utf8") as f:
+        #     json.dump(
+        #         {
+        #             "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+        #                 "assistant_first_message"
+        #             ],
+        #             "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
+        #             "VISION_PROMPT": self.openai.config["vision_prompt"],
+        #             "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
+        #             "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
+        #         },
+        #         f,
+        #         ensure_ascii=False,
+        #         indent=2,
+        #     )
+        # shutil.copyfile(
+        #     "bot/prompts.json",
+        #     f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+        # )
+        generate_python_file_from_json(
+            json_data={
+                "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+                    "assistant_first_message"
+                ],
+                "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
+                "VISION_PROMPT": self.openai.config["vision_prompt"],
+                "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
+                "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
+            },
+            file_path="bot/prompts.py",
+        )
+
         shutil.copyfile(
-            "bot/prompts.json",
-            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+            "bot/prompts.py",
+            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.py",
         )
 
         await update.message.reply_text(
@@ -599,24 +647,41 @@ class ChatGPTTelegramBot:
 
         self.openai.config["whisper_prompt"] = new_whisper_prompt
         logging.info(f'new self.openai.config["whisper_prompt"] = {new_whisper_prompt}')
-        with open("bot/prompts.json", "w", encoding="utf8") as f:
-            json.dump(
-                {
-                    "ASSISTANT_FIRST_MESSAGE": self.openai.config[
-                        "assistant_first_message"
-                    ],
-                    "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
-                    "VISION_PROMPT": self.openai.config["vision_prompt"],
-                    "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
-                    "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
-                },
-                f,
-                ensure_ascii=False,
-                indent=2,
-            )
+        # with open("bot/prompts.json", "w", encoding="utf8") as f:
+        #     json.dump(
+        #         {
+        #             "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+        #                 "assistant_first_message"
+        #             ],
+        #             "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
+        #             "VISION_PROMPT": self.openai.config["vision_prompt"],
+        #             "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
+        #             "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
+        #         },
+        #         f,
+        #         ensure_ascii=False,
+        #         indent=2,
+        #     )
+        # shutil.copyfile(
+        #     "bot/prompts.json",
+        #     f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+        # )
+        generate_python_file_from_json(
+            json_data={
+                "ASSISTANT_FIRST_MESSAGE": self.openai.config[
+                    "assistant_first_message"
+                ],
+                "ASSISTANT_PROMPT": self.openai.config["assistant_prompt"],
+                "VISION_PROMPT": self.openai.config["vision_prompt"],
+                "WHISPER_PROMPT": self.openai.config["whisper_prompt"],
+                "VOICE_REPLY_PROMPTS": ";".join(self.config["voice_reply_prompts"]),
+            },
+            file_path="bot/prompts.py",
+        )
+
         shutil.copyfile(
-            "bot/prompts.json",
-            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.json",
+            "bot/prompts.py",
+            f"bot/prompts_backup_{datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')}.py",
         )
 
         await update.message.reply_text(

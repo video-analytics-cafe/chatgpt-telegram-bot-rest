@@ -17,7 +17,7 @@ import json
 import ast
 
 
-async def read_python_file_as_json(file_path):
+def read_python_file_as_json(file_path):
     """
     Read a Python file with constant variables and convert it back into a JSON object.
 
@@ -39,7 +39,7 @@ async def read_python_file_as_json(file_path):
     return json_data
 
 
-async def generate_python_file_from_json(json_data, file_path):
+def generate_python_file_from_json(json_data, file_path):
     """
     Generate a Python file with constant variables from JSON.
 
