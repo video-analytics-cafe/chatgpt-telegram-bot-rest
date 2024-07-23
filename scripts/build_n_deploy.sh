@@ -1,6 +1,6 @@
 # эту команду один раз в терминале запустить
 cd chatgpt-telegram-bot-rest
-git pull && ocker-compose up -d --build
+git pull && docker-compose up -d --build
 
 PIDS=$(ps aux | grep 'docker-compose logs' | grep -v grep | awk '{print $2}')
 
