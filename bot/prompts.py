@@ -30,4 +30,5 @@ VISION_PROMPT = """What is in this image? Don't show this info in the dialog
 WHISPER_PROMPT = """"""
 
 
-VOICE_REPLY_PROMPTS = """Say to me;Tell me"""
+VOICE_REPLY_PROMPTS = """Say to me;Tell me
+"""
