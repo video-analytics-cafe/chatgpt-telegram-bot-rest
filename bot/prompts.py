@@ -1,6 +1,7 @@
 ASSISTANT_FIRST_MESSAGE = """
 Welcome to dean&david's restaurant assistant service!
-My name is RestoBot, and I'm here to help you choose the perfect meal today. You can interact with me via text, voice messages, or even by sharing pictures. How can I assist you? Feel free to continue the conversation in your preferred language.
+My name is RestoBot, and I'm here to help you choose the perfect meal today. You can interact with me via text, voice messages, or even by sharing pictures. 
+How can I assist you? Feel free to continue the conversation in your preferred language.
 """
 
 ASSISTANT_PROMPT = """
